@@ -1,0 +1,9 @@
+^Satisficing\.Rproj$
+^\.Rproj\.user$
+^\.plan$
+(^|/)desktop\.ini$
+\.tar\.gz$
+^Satisficing.*\.Rcheck$
+^LICENSE$
+^Release$
+^tmp$

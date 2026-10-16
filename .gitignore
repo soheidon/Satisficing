@@ -1,0 +1,9 @@
+.RData
+.Rhistory
+.Rproj.user/
+.plan/
+*.Rcheck/
+/*.tar.gz
+tmp/
+*.Rproj
+desktop.ini

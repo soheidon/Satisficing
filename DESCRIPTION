@@ -1,0 +1,17 @@
+Package: Satisficing
+Type: Package
+Title: Tools for Detecting Indicators of Survey Satisficing
+Version: 0.1.0
+Authors@R: person("Sohei", "Ide", email = "sohei@ni.tama.ac.jp", role = c("aut", "cre"))
+Description: Provides tools for detecting potential indicators of satisficing in
+    survey responses, including straight-line response patterns and row-wise
+    evaluation of logical conditions.
+License: GPL (>= 2)
+URL: https://github.com/soheidon/Satisficing
+BugReports: https://github.com/soheidon/Satisficing/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1
