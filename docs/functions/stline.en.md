@@ -14,6 +14,14 @@ Kim et al. (2019) review several measures of straightlining, including *simple n
 
 `stline()` provides a binary indicator for identical observed responses. Its missing-data behavior and other implementation details mean that it is not identical to Kim et al.'s measure under every condition.
 
+### Relationship to Simple Nondifferentiation
+
+Kim et al. (2019) discuss Simple Nondifferentiation among several straightlining measures. However, the publicly available abstract does not specify the detailed decision rule for responses containing missing values. Do not treat `stline()` as a complete reproduction of Kim et al.'s measure.
+
+For an implementation-level comparison, the [`nondiff()` function](https://github.com/mweylandt/straightliner/blob/main/R/simple_nondiff.R#L31-L55) in the R package [`straightliner`](https://github.com/mweylandt/straightliner) classifies each respondent using `length(unique(x)) == 1` and does not remove `NA` values. Thus, it agrees with `stline()` for complete rows that are either fully identical or contain differing answers, but it can disagree when values are missing. For example, `3, NA, 3, 3` is `1` under `stline()` and `FALSE` under that implementation. An all-missing row is `NA` under `stline()` and `TRUE` under that implementation.
+
+`stline()` compares only non-missing responses and requires at least two valid responses. It returns `NA` when zero or one valid responses are available. This missing-data rule differs from the current `straightliner::nondiff()` implementation and cannot be assumed to match Kim et al.'s original specification based on the public abstract alone.
+
 ## 2. Decision rule
 
 Let respondent \(i\)'s responses to the selected items be

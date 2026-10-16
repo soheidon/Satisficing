@@ -12,6 +12,14 @@ Kim et al. (2019) は、ストレートライン回答を測定する複数の�
 
 `stline()` は、このような完全同一回答を検出するための二値指標を提供します。ただし、欠測値の扱いなどに独自の仕様があるため、Kim et al. (2019) の指標とすべての条件で同一になるとは限りません。
 
+### Simple Nondifferentiationとの関係
+
+Kim et al. (2019) は Simple Nondifferentiation を含む複数のストレートライン指標を取り上げています。ただし、公開抄録からは欠測値を含む場合の詳細な判定規則を確認できません。そのため、`stline()` をKimらの指標の完全な再現として扱わないでください。
+
+実装上の比較対象として、Rパッケージ [`straightliner`](https://github.com/mweylandt/straightliner) の [`nondiff()`](https://github.com/mweylandt/straightliner/blob/main/R/simple_nondiff.R#L31-L55) があります。同関数は各回答者について `length(unique(x)) == 1` で判定し、`NA` を除外しません。したがって、欠測のない完全同一回答と完全回答内の不一致では `stline()` と同じ分類になりますが、部分欠測では分類が異なります。例えば、`3, NA, 3, 3` は `stline()` では `1`、同実装では `FALSE` です。全項目欠測は `stline()` では `NA`、同実装では `TRUE` になります。
+
+`stline()` は非欠測回答が2項目以上あるとき、その回答だけを比較します。0項目または1項目しか有効回答がない場合は `NA` を返します。この欠測値の仕様は `straightliner::nondiff()` の現在の実装とも、公開抄録だけから確認できるKim et al. (2019) の仕様とも同一と断定できません。
+
 ## 2. 判定方法
 
 回答者 \(i\) の指定項目に対する回答を
@@ -256,7 +264,7 @@ Kim, Y., Dykema, J., Stevenson, J., Black, P., & Moberg, D. P. (2019). Straightl
 
 Meade, A. W., & Craig, S. B. (2012). Identifying careless responses in survey data. *Psychological Methods, 17*(3), 437–455. https://doi.org/10.1037/a0028085
 
-Wang, M. D., & Hau, K. T. (2025). In Likert scale, is ticking options consecutively at two ends equally problematic as ticking in the middle? *Journal of Official Statistics, 41*(1), 73–95. https://doi.org/10.1177/0282423X241273455
+- Wang, M. D., & Hau, K. T. (2025). In Likert scale, is ticking options consecutively at two ends equally problematic as ticking in the middle? *Journal of Official Statistics, 41*(1), 73–95. <https://doi.org/10.1177/0282423X241273455>
 ---
 
 [ユーザーガイド](../guide.ja.md) | [User guide](../guide.en.md)
