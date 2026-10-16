@@ -1,0 +1,38 @@
+This package (Satisficing) incorporates code, documentation, and datasets from
+the third-party R package 'careless'.
+
+1. Ported Component Details
+---------------------------
+- Component Name: careless
+- Upstream Version: 1.2.2
+- Publication Date: 2023-10-01 (CRAN)
+- Copyright Holder: (c) 2016 Richard Yentes
+- Authors: Richard Yentes [cre, aut], Francisco Wilhelm [aut]
+- Official CRAN URL: https://cloud.r-project.org/package=careless
+- Upstream Source Repository: https://github.com/ryentes/careless
+- License: MIT License (see file licenses/careless-MIT.txt in installed package,
+  or inst/licenses/careless-MIT.txt in source tree)
+
+2. Included Files and Adaptations
+---------------------------------
+- R Functions:
+  - evenodd (from careless/R/evenodd.R)
+  - irv (from careless/R/irv.R)
+  - longstring and internal rle_string (from careless/R/longstring.R)
+  - mahad (from careless/R/mahad.R)
+  - psychant (from careless/R/psychant.R)
+  - psychsyn, internal get_item_pairs, and syn_for_one (from careless/R/psychsyn.R)
+  - psychsyn_critval (from careless/R/psychsyn_critval.R)
+- Datasets:
+  - careless_dataset (data/careless_dataset.rda)
+  - careless_dataset2 (data/careless_dataset2.rda)
+- Documentation:
+  - Function and dataset Rd documentation adapted from careless package help files.
+
+3. Relationship and Disclaimer
+------------------------------
+Satisficing is an independent package developed and maintained by Sohei IDE.
+Satisficing is NOT the official 'careless' package, nor is it endorsed by the
+authors of 'careless'. The ported components are redistributed under the terms
+of the MIT License, while Satisficing as a whole is licensed under the GNU
+General Public License version 2 or later (GPL >= 2).

@@ -1,0 +1,54 @@
+# Ported from the R package 'careless' version 1.2.2
+# Original Authors: Richard Yentes, Francisco Wilhelm
+# Upstream URL: https://github.com/ryentes/careless
+# CRAN URL: https://cloud.r-project.org/package=careless
+# License: MIT (see inst/licenses/careless-MIT.txt and inst/COPYRIGHTS)
+
+#' Find and graph Mahalanobis Distance (D) and flag potential outliers.
+#'
+#' Takes a matrix of item responses and computes Mahalanobis D. Can additionally return a
+#' vector of binary outlier flags.
+#' Mahalanobis distance is calculated using the function \code{psych::outlier} of the \pkg{psych}
+#' package, an implementation which supports missing values.
+#' Ported from the \pkg{careless} package (version 1.2.2).
+#'
+#' @param x a matrix or data frame of data
+#' @param plot Plot the resulting QQ graph
+#' @param flag Flag potential outliers using the confidence level specified in parameter \code{confidence}
+#' @param confidence The desired confidence level of the result
+#' @param na.rm Should missing data be deleted
+#' @return If \code{flag = FALSE}, a numeric vector of squared Mahalanobis distances (\code{d_sq}).
+#'   If \code{flag = TRUE}, a data frame containing \code{d_sq} and boolean \code{flagged}.
+#' @author Richard Yentes \email{ryentes@gmail.com}, Francisco Wilhelm \email{franciscowilhelm@gmail.com}
+#' @references
+#' Meade, A. W., & Craig, S. B. (2012). Identifying careless responses in survey data.
+#' \emph{Psychological Methods, 17(3)}, 437-455. \doi{10.1037/a0028085}
+#' @export
+#' @seealso \code{psych::outlier} on which this function is based.
+#' @examples
+#' mahad_raw <- mahad(careless_dataset) #only the distances themselves
+#' mahad_flags <- mahad(careless_dataset, flag = TRUE) #additionally flag outliers
+#' mahad_flags <- mahad(careless_dataset, flag = TRUE, confidence = 0.999) #Apply a strict criterion
+mahad <- function(x, plot = TRUE, flag = FALSE, confidence = 0.99, na.rm = TRUE) {
+  if(na.rm == FALSE) {
+    if(any(is.na(x)) == TRUE) {stop("Some values are NA. Mahalanobis distance was not computed.
+                                      Use na.rm = TRUE to use available cases.", call. = FALSE)}
+    }
+  #remove rows with all NA and issue warning
+  complete.na <- apply(x, 1, function(y) { all(is.na(y)) } )
+  if(any(complete.na)) {
+    warning("Some cases contain only NA values. The Mahalanobis distance will be calculated using available cases.",
+            call. = FALSE) }
+  x_filtered <- x[!complete.na,]
+
+  maha_data <- as.numeric(psych::outlier(x_filtered, plot, bad = 0, na.rm = na.rm))
+  d_sq <- rep_len(NA, nrow(x_filtered))
+  d_sq[!complete.na] <- maha_data
+
+  if(flag == TRUE) {
+    cut <- stats::qchisq(confidence, ncol(x))
+    flagged <- (d_sq > cut)
+    return(data.frame(d_sq = d_sq, flagged = flagged))
+  }
+  else{ return(d_sq) }
+}

@@ -5,5 +5,5 @@
 \.tar\.gz$
 ^Satisficing.*\.Rcheck$
 ^LICENSE\.md$
-^Release$
+^Release.*$
 ^tmp$

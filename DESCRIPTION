@@ -1,16 +1,23 @@
 Package: Satisficing
 Type: Package
 Title: Tools for Detecting Indicators of Survey Satisficing
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Sohei", "Ide", email = "sohei@ni.tama.ac.jp", role = c("aut", "cre"))
 Description: Provides tools for detecting potential indicators of satisficing in
     survey responses, including straight-line response patterns and row-wise
-    evaluation of logical conditions.
+    evaluation of logical conditions, as well as careless and insufficient
+    effort response indices ported from the 'careless' package (including
+    longstring, intra-individual response variability, even-odd consistency,
+    psychometric synonyms/antonyms, and Mahalanobis distance).
 License: GPL (>= 2)
+Copyright: See file COPYRIGHTS
 URL: https://github.com/soheidon/Satisficing
 BugReports: https://github.com/soheidon/Satisficing/issues
 Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
+Imports:
+    psych
 Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
