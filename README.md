@@ -1,3 +1,5 @@
+[English](README.md) | [日本語](README-ja.md)
+
 # Satisficing
 
 Tools for Detecting Indicators of Survey Satisficing.

@@ -1,3 +1,5 @@
+[English](README.md) | [日本語](README-ja.md)
+
 # Satisficing
 
 調査における満足化回答の指標を検出するためのツールです。
