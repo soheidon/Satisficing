@@ -113,6 +113,8 @@ longstring(pattern, avg = TRUE)
 
 ## 4. `irv()`: How much do responses vary within a respondent?
 
+See the detailed [`irv()` guide](functions/irv.en.md).
+
 **Purpose:** Computes the standard deviation of item responses for each respondent (intra-individual response variability; IRV).
 
 ```r

@@ -113,6 +113,8 @@ longstring(pattern, avg = TRUE)
 
 ## 4. `irv()`：回答者内のばらつきを測る
 
+詳しくは[`irv()`の解説](functions/irv.ja.md)を参照してください。
+
 **目的：** 回答者ごとに、項目を横断した回答値の標準偏差（intra-individual response variability; IRV）を計算します。
 
 ```r
