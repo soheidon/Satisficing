@@ -1,4 +1,4 @@
-[English](README.md) | [日本語](README-ja.md)
+[English](https://github.com/soheidon/Satisficing/blob/main/README.md) | [日本語](https://github.com/soheidon/Satisficing/blob/main/docs/README-ja.md) | [User Guide](https://github.com/soheidon/Satisficing/blob/main/docs/guide.en.md) | [日本語ガイド](https://github.com/soheidon/Satisficing/blob/main/docs/guide.ja.md)
 
 # Satisficing
 
@@ -80,7 +80,3 @@ The package reference manual is available as [`Satisficing.pdf`](https://github.
 ## License
 
 GPL (>= 2). See [`LICENSE.md`](https://github.com/soheidon/Satisficing/blob/main/LICENSE.md) for the full license text and copyright notice.
-
-## 日本語
-
-日本語の概要は [README-ja.md](README-ja.md) を参照してください。

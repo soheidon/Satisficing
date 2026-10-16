@@ -1,4 +1,4 @@
-[English](README.md) | [日本語](README-ja.md)
+[English](https://github.com/soheidon/Satisficing/blob/main/README.md) | [日本語](https://github.com/soheidon/Satisficing/blob/main/docs/README-ja.md) | [User Guide](https://github.com/soheidon/Satisficing/blob/main/docs/guide.en.md) | [日本語ガイド](https://github.com/soheidon/Satisficing/blob/main/docs/guide.ja.md)
 
 # Satisficing
 
@@ -73,14 +73,10 @@ maha_dist <- mahad(careless_dataset, plot = FALSE)
 
 - **移植コンポーネント**: `longstring`, `irv`, `evenodd`, `psychsyn`, `psychant`, `psychsyn_critval`, `mahad`, `careless_dataset`, `careless_dataset2`
 - **ライセンス**: 移植されたコンポーネントは MIT License (c) 2016 Richard Yentes の下で許諾されています。
-  - ソースツリー: [`inst/licenses/careless-MIT.txt`](inst/licenses/careless-MIT.txt) および [`inst/COPYRIGHTS`](inst/COPYRIGHTS)
+  - ソースツリー: [`inst/licenses/careless-MIT.txt`](../inst/licenses/careless-MIT.txt) および [`inst/COPYRIGHTS`](../inst/COPYRIGHTS)
   - インストール済みパッケージ: `licenses/careless-MIT.txt` および `COPYRIGHTS`
 - **免責事項**: `Satisficing` は Sohei IDE が開発・保守している独立したパッケージであり、`careless` の原著者とは提携しておらず、支持を受けているものでもありません。
 
 ## ライセンス
 
 GPL (>= 2)。著作権表示とライセンス全文は [`LICENSE.md`](https://github.com/soheidon/Satisficing/blob/main/LICENSE.md) を参照してください。
-
-## English
-
-英語の概要は [README.md](README.md) を参照してください。
