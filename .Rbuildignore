@@ -4,6 +4,6 @@
 (^|/)desktop\.ini$
 \.tar\.gz$
 ^Satisficing.*\.Rcheck$
-^LICENSE$
+^LICENSE\.md$
 ^Release$
 ^tmp$
