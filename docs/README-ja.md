@@ -15,13 +15,26 @@
 
 ### 'careless' から移植された指標
 - `longstring()`: 同一回答の最長連続数（および平均長）を算出。
-- `irv()`: 個人内回答ばらつき（連続回答の標準偏差、Intra-individual Response Variability）を算出。
+- `irv()`: 個人内回答変動（指定項目に対する回答者内標準偏差、Intra-individual Response Variability）を算出。項目順に依存する同一回答の連続長は `longstring()` で測定します。
 - `evenodd()`: 偶数項目と奇数項目の下位尺度相関に基づく偶奇一貫性（even-odd consistency）スコアを算出。
 - `psychsyn()`: 計量心理学的同義語（psychometric synonyms）項目ペア間の個人内相関を算出。
 - `psychant()`: 計量心理学的反義語（psychometric antonyms）項目ペア間の個人内相関を算出。
 - `psychsyn_critval()`: 項目ペア間の相関を計算・順位付けし、適切な閾値（critical value）の設定を支援。
 - `mahad()`: `psych::outlier` を用いてマハラノビス距離を算出し、潜在的な外れ値にフラグを付与。
 - データセット: 検証および例示用のシミュレーションデータ `careless_dataset`、`careless_dataset2` を提供。
+
+### ストレートライン測度（Kim et al., 2019 / straightliner 規約）
+- 正準 straightliner API:
+  - `meanRootPairs()`: 項目ペア間の平均平方根差（Mean Root of Pairs）を行ごとに算出し、Kim et al. (2019) の論文式に基づき標本内正規化したスコアを算出。
+  - `maxIdenticalRating()`: 最頻回答カテゴリーの割合（Maximum Identical Rating）を算出。
+  - `question_sd()`: 回答者ごとのバッテリー項目標準偏差を算出。
+  - `scale_point_variation()`: カテゴリー割合に基づく尺度点多様性（Scale Point Variation）を算出（欠測を1カテゴリーとして扱う straightliner 規約に準拠）。
+  - `nondiff()`: 単純無分化（Simple Nondifferentiation）を論理ベクトル（行内の全回答が同一なら `TRUE`、異なれば `FALSE`）として算出。
+  - `straightlining()`: 複数の個人レベル指標（`mrp`, `mir`, `qsd`, `spv`, `nondiff`）を一括算出するコンビニエンス関数（元データへの列結合オプションあり）。
+  - `straightlining_qset()`: 複数バッテリーにわたる集計サマリーを算出し、専用の `print()` 形式を備えた `straightliner` クラスオブジェクトとして返却。
+- 互換用ラッパー:
+  - `mrp()`, `mir()`, `spv()`: 後方互換性のために維持。入力データフレームに計算結果列を追加して返却。
+- 既存の `stline()`（単純無分化の整数フラグ）および `irv()`（項目回答値の個人内標準偏差）と合わせ、Kim et al. (2019) で検討された5つのストレートライン測度を網羅します。なお、`nondiff()` が厳密な全項目同一性を論理値で返すのに対し、`stline()` は2つ以上の非欠測回答がある行について観察された回答が同一かを整数フラグ（`1L`/`0L`/`NA_integer_`）で返すという仕様上の差異があります。
 
 ## インストール
 
@@ -37,13 +50,19 @@ remotes::install_github("soheidon/Satisficing")
 ```r
 library(Satisficing)
 
-# ストレートライン回答の検出
+# ストレートライン回答の検出（独自ツール）
 responses <- data.frame(
   q1 = c(1, 1, 1, 2, NA),
   q2 = c(1, 1, 2, 2, NA),
   q3 = c(1, 2, 3, 2, 1)
 )
 stline(responses, c("q1", "q2", "q3"))
+
+# 正準 straightliner 関数（Kim et al., 2019）
+straightlining(responses, varnames = c("q1", "q2", "q3"))
+maxIdenticalRating(responses, varnames = c("q1", "q2", "q3"))
+meanRootPairs(responses, varnames = c("q1", "q2", "q3"))
+nondiff(responses, varnames = c("q1", "q2", "q3"))
 
 # 論理条件による行判定
 respondents <- data.frame(
@@ -76,6 +95,10 @@ maha_dist <- mahad(careless_dataset, plot = FALSE)
   - ソースツリー: [`inst/licenses/careless-MIT.txt`](../inst/licenses/careless-MIT.txt) および [`inst/COPYRIGHTS`](../inst/COPYRIGHTS)
   - インストール済みパッケージ: `licenses/careless-MIT.txt` および `COPYRIGHTS`
 - **免責事項**: `Satisficing` は Sohei IDE が開発・保守している独立したパッケージであり、`careless` の原著者とは提携しておらず、支持を受けているものでもありません。
+
+## 参考文献
+
+- Kim, Y., Dykema, J., Stevenson, J., Black, P., & Moberg, D. P. (2019). Straightlining: Overview of Measurement, Comparison of Indicators, and Effects in Mail–Web Mixed-Mode Surveys. *Social Science Computer Review*, 37(2), 214–233. <https://doi.org/10.1177/0894439317752406>
 
 ## ライセンス
 

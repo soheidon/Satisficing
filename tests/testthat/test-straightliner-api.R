@@ -57,7 +57,7 @@ test_that("canonical straightliner functions handle clean_data, column indices, 
   expect_identical(sl_rev4$nondiff, nd_res)
 
   # Oracle comparison with straightliner reference if available
-  ref_lib <- file.path(rprojroot::find_root(rprojroot::is_r_package), "tmp", "v0.3.0", "straightliner_lib")
+  ref_lib <- testthat::test_path("..", "..", "tmp", "v0.3.0", "straightliner_lib")
   if (dir.exists(ref_lib) && "straightliner" %in% rownames(installed.packages(lib.loc = ref_lib))) {
     sl_ns <- tryCatch(loadNamespace("straightliner", lib.loc = ref_lib), error = function(e) NULL)
     if (!is.null(sl_ns)) {

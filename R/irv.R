@@ -10,6 +10,9 @@
 #' (Dunn, Heggestad, Shanock, & Theilgard, 2018, p. 108).
 #' By default, the IRV is calculated across all columns of the input data. Additionally it can be applied to different subsets of the data.
 #' This can detect degraded response quality which occurs only in a certain section of the questionnaire (usually the end).
+#' With \code{split = FALSE}, IRV is the standard deviation across the selected response values and is invariant to their order.
+#' With \code{split = TRUE}, consecutive column subsets are formed in their current order, so reordering columns can change subset membership and subset IRV values.
+#' Unlike \code{\link{longstring}}, \code{irv()} does not measure runs of consecutive identical responses.
 #' Whereas Dunn et al. (2018) propose to mark persons with \emph{low} IRV scores as outliers - reflecting straightlining responses,
 #' Marjanovic et al. (2015) propose to mark persons with \emph{high} IRV scores - reflecting highly random responses (see References).
 #' Ported from the \pkg{careless} package (version 1.2.2).

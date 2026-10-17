@@ -1,7 +1,7 @@
 Package: Satisficing
 Type: Package
 Title: Tools for Detecting Indicators of Survey Satisficing
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: person("Sohei", "Ide", email = "sohei@ni.tama.ac.jp", role = c("aut", "cre"))
 Description: Provides tools for detecting potential indicators of satisficing in
     survey responses, including straight-line response patterns and row-wise
@@ -22,3 +22,4 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.1
+RoxygenNote: 7.3.3

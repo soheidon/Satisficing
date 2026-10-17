@@ -161,60 +161,27 @@ The respondent did not give the same response across all 35 items, so `stline()`
 
 The two indicators are complementary. `stline()` does not depend on item order: both `3, 3, 4, 4` and `3, 4, 3, 4` return 0. Longstring does depend on order; these sequences have maximum run lengths of 2 and 1, respectively.
 
-## 6. Applying the function to personality questionnaires such as the BFI
+## 6. Interpretation cautions
 
-In a personality questionnaire such as the Big Five Inventory (BFI), repeatedly selecting the same category across items measuring different traits may warrant further examination.
-
-If the 35 BFI items are stored as `BFI1` through `BFI35`, you can run:
-
-```r
-items <- paste0("BFI", 1:35)
-
-result <- stline(
-  bfi_data,
-  columns = items
-)
-```
-
-Count the flagged responses with:
-
-```r
-table(result$straight_line, useNA = "ifany")
-```
-
-Calculate the proportion among respondents for whom the result is available with:
-
-```r
-mean(result$straight_line, na.rm = TRUE)
-```
-
-This proportion is the share of respondents whose observed responses were identical across the selected 35 items.
-
-The BFI includes items from multiple factors and reverse-keyed items. Selecting the same category throughout may therefore merit closer review. However, identical responses alone do not establish careless responding; a respondent's actual traits or attitudes toward the items may also produce the same category.
-
-When assessing the response behavior of repeatedly selecting the same option, use the **original responses before reverse-scoring**, in general. Values after reverse-scoring may no longer represent the same options the respondent selected on the questionnaire.
-
-## 7. Interpretation cautions
-
-### 7.1 Straightlining is not sufficient evidence of careless responding
+### 6.1 Straightlining is not sufficient evidence of careless responding
 
 Meade and Craig (2012) describe different patterns of careless responding, including random and non-random patterns, which may require different indicators. `stline()` detects one type of non-random response pattern; it does not capture every form of careless responding.
 
 A flagged straightlining pattern is not, by itself, proof that the respondent was inattentive.
 
-### 7.2 Detection depends on the number and content of items
+### 6.2 Detection depends on the number and content of items
 
 The probability of giving the same response across all items depends on the number of items, the number of response categories, correlations among items, and response distributions.
 
 For example, complete agreement across three items on a five-point scale has a different statistical meaning from complete agreement across 35 items on the same scale. When comparing results across scales or studies, consider the number and content of the selected items.
 
-### 7.3 Choosing the item set matters
+### 6.3 Choosing the item set matters
 
-The meaning of identical responses differs when evaluating items from different constructs together versus items from a single factor.
+The meaning of identical responses may differ between a set of items measuring one construct and a set covering diverse content. Interpret the pattern in light of the item wording and study design.
 
-For example, answering 4 to all five items measuring one trait may be a natural response pattern. Answering 4 to all 35 items covering several traits or opposing item content may warrant additional review for consistency with the item wording.
+For straightlining indicators, use the **original recorded responses before reverse-scoring**. Reverse-scored values may no longer represent the options respondents selected.
 
-### 7.4 Missing data can increase the apparent evidence
+### 6.4 Missing data can increase the apparent evidence
 
 `stline()` returns 1 when at least two valid responses are identical, even if the other selected items are missing.
 
@@ -222,7 +189,7 @@ For example, if 33 of 35 items are missing and the remaining two responses are b
 
 For datasets with substantial missingness, consider restricting analysis to complete cases or reviewing the number of valid responses alongside the indicator.
 
-## 8. Using the function in research
+## 7. Using the function in research
 
 `stline()` can support exploratory assessments of response quality and data cleaning. However, automatically excluding respondents solely because `stline()` flags them is not recommended.
 
@@ -230,7 +197,7 @@ Meade and Craig (2012) emphasize the use of multiple response-quality indicators
 
 Consider interpreting `stline()` together with Longstring, within-respondent response variability (IRV), item-response consistency, and other relevant evidence. If respondents are excluded, report the criteria, the number excluded, and how the results change with and without those exclusions.
 
-## 9. References
+## 8. References
 
 Johnson, J. A. (2005). Ascertaining the validity of individual protocols from Web-based personality inventories. *Journal of Research in Personality, 39*(1), 103–129. https://doi.org/10.1016/j.jrp.2004.09.009
 

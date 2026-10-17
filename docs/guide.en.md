@@ -17,15 +17,15 @@ This guide does not repeat the argument lists from the help pages. Instead, it e
 | What you want to know | Function | Main result |
 |---|---|---|
 | Whether responses are identical across selected items | [`stline()`](functions/stline.en.md) | Adds a 1 / 0 / NA flag |
-| The maximum number of consecutive identical responses | `longstring()` | Maximum and average run lengths |
-| How much responses vary within each respondent | `irv()` | Within-respondent standard deviation |
+| The maximum number of consecutive identical responses | [`longstring()`](functions/longstring.en.md) | Maximum and average run lengths |
+| How much responses vary within each respondent | [`irv()`](functions/irv.en.md) | Within-respondent standard deviation |
 | Whether odd- and even-item subscales are consistent | `evenodd()` | Within-respondent correlation |
 | Whether responses to positively correlated item pairs are consistent | `psychsyn()` | Within-respondent correlation |
 | Whether responses to negatively correlated item pairs are consistent | `psychant()` | Within-respondent correlation |
 | Which item pairs to use for a consistency check | `psychsyn_critval()` | A table of item pairs and correlations |
 | Whether a respondent is multivariately unusual relative to others | `mahad()` | Squared Mahalanobis distance and a flag |
 | Whether rows meet a user-defined logical condition | `matching()` | Adds a 1 / 0 / NA flag |
-| Column names and their column numbers | `rawnn()` | Console output |
+| Column names and their column numbers | [`rawnn()`](functions/rawnn.en.md) | Console output |
 
 ### 1.2 Installation and example datasets
 
@@ -89,6 +89,8 @@ With this setting, a respondent who answered 3 to every item receives `0`. Exclu
 **Interpretation:** Identical responses to all five items may be a natural result of the item content. Also, a pattern such as `3333344444`, where responses change partway through, is not detected as a single identical response pattern. Use `longstring()` to examine such runs.
 
 ## 3. `longstring()`: How long are runs of identical responses?
+
+See the detailed [`longstring()` guide](functions/longstring.en.md).
 
 **Purpose:** Examines how many adjacent responses are identical in the order of the items.
 
@@ -225,6 +227,8 @@ The function returns the original data frame with an integer column added. The r
 For example, you can explore combinations such as a high score on one item and a low score on another. Whether such a combination is contradictory depends on the item content. A condition being met does not mean the response is careless.
 
 ## 11. `rawnn()`: Inspect column numbers and names
+
+See the detailed [`rawnn()` guide](functions/rawnn.en.md).
 
 **Purpose:** Prints each data-frame column’s 1-based position and name to the console.
 

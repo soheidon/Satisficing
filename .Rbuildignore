@@ -6,4 +6,5 @@
 ^Satisficing.*\.Rcheck$
 ^LICENSE\.md$
 ^Release.*$
+^AGENTS\.md$
 ^tmp$

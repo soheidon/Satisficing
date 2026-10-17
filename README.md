@@ -15,13 +15,26 @@ Tools for Detecting Indicators of Survey Satisficing.
 
 ### Ported Indices from 'careless'
 - `longstring()` identifies the longest uninterrupted string of identical responses (and optionally the average length).
-- `irv()` computes the intra-individual response variability (standard deviation across consecutive responses).
+- `irv()` computes intra-individual response variability as the standard deviation of responses across selected items; it does not depend on item order. `longstring()` measures consecutive runs of identical responses.
 - `evenodd()` computes the even-odd consistency score based on subscale correlations.
 - `psychsyn()` computes within-person correlation across psychometric synonym item pairs.
 - `psychant()` computes within-person correlation across psychometric antonym item pairs.
 - `psychsyn_critval()` computes and ranks correlations among item pairs to help set critical values.
 - `mahad()` computes Mahalanobis distance using `psych::outlier` and flags potential outliers.
 - Datasets: `careless_dataset` and `careless_dataset2` provide simulated response datasets for demonstration and testing.
+
+### Straightlining Measures (Kim et al., 2019 / straightliner conventions)
+- Canonical straightliner API:
+  - `meanRootPairs()`: Computes sample-normalized Mean Root of Pairs (MRP) using the Kim et al. (2019) formula.
+  - `maxIdenticalRating()`: Computes Maximum Identical Rating (MIR), the proportion of questions with the most frequent response.
+  - `question_sd()`: Computes standard deviation across the question battery for each respondent.
+  - `scale_point_variation()`: Computes Scale Point Variation (SPV) across response categories.
+  - `nondiff()`: Computes simple nondifferentiation as a logical vector (`TRUE` if all responses in a row are identical).
+  - `straightlining()`: Multi-metric individual straightlining analysis returning selected indicators (`mrp`, `mir`, `qsd`, `spv`, `nondiff`).
+  - `straightlining_qset()`: Summary aggregation across multiple question sets (batteries) with formatted output.
+- Legacy wrappers:
+  - `mrp()`, `mir()`, `spv()`: Retained for backward compatibility; append the calculated indicator as a column to the input data frame.
+- Together with `stline()` (original integer indicator for identical observed responses) and `irv()` (row-wise standard deviation), `Satisficing` covers all five straightlining measures discussed in Kim et al. (2019).
 
 ## Installation
 
@@ -37,13 +50,19 @@ remotes::install_github("soheidon/Satisficing")
 ```r
 library(Satisficing)
 
-# Straight-line detection
+# Straight-line detection (original tool)
 responses <- data.frame(
   q1 = c(1, 1, 1, 2, NA),
   q2 = c(1, 1, 2, 2, NA),
   q3 = c(1, 2, 3, 2, 1)
 )
 stline(responses, c("q1", "q2", "q3"))
+
+# Canonical straightliner functions (Kim et al., 2019)
+straightlining(responses, varnames = c("q1", "q2", "q3"))
+maxIdenticalRating(responses, varnames = c("q1", "q2", "q3"))
+meanRootPairs(responses, varnames = c("q1", "q2", "q3"))
+nondiff(responses, varnames = c("q1", "q2", "q3"))
 
 # Logical condition matching
 respondents <- data.frame(
@@ -76,6 +95,10 @@ The package reference manual is available as [`Satisficing.pdf`](https://github.
   - Source tree: [`inst/licenses/careless-MIT.txt`](inst/licenses/careless-MIT.txt) and [`inst/COPYRIGHTS`](inst/COPYRIGHTS).
   - Installed package: `licenses/careless-MIT.txt` and `COPYRIGHTS`.
 - **Disclaimer**: `Satisficing` is an independent package developed and maintained by Sohei IDE. It is not affiliated with, nor endorsed by, the authors of `careless`.
+
+## References
+
+- Kim, Y., Dykema, J., Stevenson, J., Black, P., & Moberg, D. P. (2019). Straightlining: Overview of Measurement, Comparison of Indicators, and Effects in Mail–Web Mixed-Mode Surveys. *Social Science Computer Review*, 37(2), 214–233. <https://doi.org/10.1177/0894439317752406>
 
 ## License
 
