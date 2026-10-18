@@ -36,6 +36,13 @@
   - `mrp()`, `mir()`, `spv()`: 後方互換性のために維持。入力データフレームに計算結果列を追加して返却。
 - 既存の `stline()`（単純無分化の整数フラグ）および `irv()`（項目回答値の個人内標準偏差）と合わせ、Kim et al. (2019) で検討された5つのストレートライン測度を網羅します。なお、`nondiff()` が厳密な全項目同一性を論理値で返すのに対し、`stline()` は2つ以上の非欠測回答がある行について観察された回答が同一かを整数フラグ（`1L`/`0L`/`NA_integer_`）で返すという仕様上の差異があります。
 
+### 意味的不整合（Semantic Inconsistency）
+- `semantic_inconsistency()`: 利用者が指定した項目ペアの期待関係（同方向 `same` または逆方向 `opposite`）に基づき、回答の意味的不整合度を算出（尺度理論値の範囲 [0, 1] に正規化）。
+
+### 回答者スクリーニングおよび抽出（Screening and Filtering）
+- `flag_respondents()`: 利用者定義の論理条件に基づき、品質指標からスクリーニングフラグ（論理値列）を生成（data-mask 評価、ID 列の自動/明示保持）。
+- `filter_respondents()`: 品質フラグに基づき、明示的 ID 照合、三値論理集約（`any`, `all`, `at_least`）、および監査ログ（audit）を伴う回答者データの抽出・除外を実行。
+
 ## インストール
 
 GitHub からパッケージをインストールします。
@@ -50,13 +57,27 @@ remotes::install_github("soheidon/Satisficing")
 ```r
 library(Satisficing)
 
-# ストレートライン回答の検出（独自ツール）
+# 調査回答の例
 responses <- data.frame(
   q1 = c(1, 1, 1, 2, NA),
   q2 = c(1, 1, 2, 2, NA),
   q3 = c(1, 2, 3, 2, 1)
 )
+
+# ストレートライン回答の検出（独自ツール）
 stline(responses, c("q1", "q2", "q3"))
+
+# 項目ペア間の意味的不整合度
+item_pairs <- data.frame(
+  item1 = c("q1", "q1"),
+  item2 = c("q2", "q3"),
+  relation = c("same", "opposite"),
+  stringsAsFactors = FALSE
+)
+semantic_scores <- semantic_inconsistency(
+  responses, item_pairs,
+  scale_min = 1, scale_max = 5
+)
 
 # 正準 straightliner 関数（Kim et al., 2019）
 straightlining(responses, varnames = c("q1", "q2", "q3"))

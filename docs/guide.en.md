@@ -2,13 +2,13 @@
 
 # Satisficing User Guide
 
-**For version: 0.2.0**
+**For version: 0.4.0**
 **An explanatory guide, separate from the official reference manual**
 [GitHub repository](https://github.com/soheidon/Satisficing)
 
 ## 1. About this guide
 
-`Satisficing` is an R package for examining indicators of satisficing—the tendency to answer with less cognitive effort than a question requires—as well as response patterns associated with careless or insufficient-effort responding. Version 0.2.0 includes three original functions (`stline()`, `matching()`, and `rawnn()`) and seven functions ported from `careless` v1.2.2.
+`Satisficing` is an R package for examining indicators of satisficing—the tendency to answer with less cognitive effort than a question requires—as well as response patterns associated with careless or insufficient-effort responding.
 
 This guide does not repeat the argument lists from the help pages. Instead, it explains what each function can examine, how to read its results, and what its limitations are. **No single indicator establishes that a respondent was careless or dishonest.** Interpret results in light of the study purpose, item content, presentation order, scale properties, and other relevant information.
 
@@ -24,6 +24,9 @@ This guide does not repeat the argument lists from the help pages. Instead, it e
 | Whether responses to negatively correlated item pairs are consistent | `psychant()` | Within-respondent correlation |
 | Which item pairs to use for a consistency check | `psychsyn_critval()` | A table of item pairs and correlations |
 | Whether a respondent is multivariately unusual relative to others | `mahad()` | Squared Mahalanobis distance and a flag |
+| Whether responses to semantically related item pairs are inconsistent | [`semantic_inconsistency()`](functions/semantic-inconsistency.en.md) | Summary inconsistency scores and counts |
+| Flag respondents based on logical criteria | [`flag_respondents()`](functions/flag-respondents.en.md) | Data frame of logical flags |
+| Filter and audit respondents based on quality flags | [`filter_respondents()`](functions/filter-respondents.en.md) | Retained/excluded data and audit table |
 | Whether rows meet a user-defined logical condition | `matching()` | Adds a 1 / 0 / NA flag |
 | Column names and their column numbers | [`rawnn()`](functions/rawnn.en.md) | Console output |
 
@@ -238,7 +241,94 @@ rawnn(answers)
 
 The output looks like `1: id`, `2: q1`, and so on. Use it to check column names or identify the range of items to analyze. The function does not modify the data and returns an invisible `NULL`.
 
-## 12. Example with a real questionnaire: a 35-item BFI
+## 12. [`semantic_inconsistency()`](functions/semantic-inconsistency.en.md): Are semantically related item pairs inconsistent?
+
+See the detailed [`semantic_inconsistency()` guide](functions/semantic-inconsistency.en.md).
+
+**Purpose:** Evaluates response inconsistency across user-specified item pairs with expected directional relationships (`same` or `opposite`). Scores are normalized to the theoretical scale range \([0, 1]\), where 0 represents complete consistency and 1 represents maximal inconsistency.
+
+```r
+item_pairs <- data.frame(
+  item1 = c("q1", "q1"),
+  item2 = c("q2", "q3"),
+  relation = c("same", "opposite"),
+  stringsAsFactors = FALSE
+)
+
+# Respondent-level summary
+semantic_res <- semantic_inconsistency(
+  answers,
+  pairs = item_pairs,
+  scale_min = 1,
+  scale_max = 5
+)
+head(semantic_res)
+```
+
+**Interpretation:** High inconsistency scores indicate that a respondent's answers diverge from the expected relationships between the specified item pairs. However, semantic inconsistency does not definitively establish careless or dishonest responding. Item pairs may be correlated when items overlap across pairs; results should be evaluated in context.
+
+Each row of `item_pairs` specifies two columns and their expected relationship. Use `same` when similar answers are expected and `opposite` when answers at opposite ends of the scale are expected. For a scale from 1 to 5, for example, a `same` pair with responses 2 and 4 has an inconsistency of 0.5; an `opposite` pair with responses 1 and 5 has an inconsistency of 0. The scale limits are theoretical limits, and all non-missing values in the selected columns must fall within them.
+
+The default result has one row per respondent. It includes the mean, maximum, and sum of valid pair scores; counts of valid and missing pairs; and the number and proportion of valid pairs at or above `threshold`. A pair is missing when either response is `NA`. `min_valid_pairs` sets the minimum number of observed pairs needed for summary scores; below that minimum, score and threshold summaries are `NA`, while pair counts remain available. The default threshold of 0.75 is illustrative, not a validated cutoff.
+
+Set `details = TRUE` to also receive a `pairs` table with one row for each respondent-pair combination. This makes it possible to inspect which pair contributed to a summary. The pair table follows respondent order and then the order in `item_pairs`.
+
+## 13. `flag_respondents()` and `filter_respondents()`: Screening and Filtering
+
+See the detailed [`flag_respondents()` guide](functions/flag-respondents.en.md) and [`filter_respondents()` guide](functions/filter-respondents.en.md) for additional examples and edge cases.
+
+### [`flag_respondents()`](functions/flag-respondents.en.md): Turn screening rules into logical columns
+
+`flag_respondents()` evaluates one or more R expressions against a data frame of respondent-level indicators. Each expression must return a logical vector with exactly one value per row. The function does not recycle a single value across multiple respondents or convert numbers to `TRUE`/`FALSE`; missing results remain `NA`. The names supplied for the expressions become the output column names. If the input has an `id` column, it is retained automatically; another ID column can be selected with `id`.
+
+In the example below, the flags identify respondents whose maximum identical run is at least four items or whose mean semantic inconsistency is at least 0.75. These thresholds are study decisions and should be justified for the data and research question.
+
+```r
+# Prepare respondent-level indicators with an ID
+indicators <- data.frame(
+  id = answers$id,
+  longstr = longstring(items),
+  mean_inc = semantic_res$mean_inconsistency
+)
+
+# Create named logical flags
+flags <- flag_respondents(
+  indicators,
+  high_longstring = longstr >= 4,
+  high_inconsistency = mean_inc >= 0.75
+)
+flags
+```
+
+The returned `flags` data frame keeps the input row order and contains the ID followed by the named logical columns. A `TRUE` value means the specified rule was met; it is not, by itself, a diagnosis of careless responding.
+
+### [`filter_respondents()`](functions/filter-respondents.en.md): Apply flags and retain an audit trail
+
+`filter_respondents()` uses logical flag columns to divide the original response data into retained and excluded respondents. It matches rows by respondent ID, so the `data` and `flags` inputs must contain the same unique, non-missing IDs with matching types and classes. Flags are reordered to match `data` by ID; row order alone is never used to join them. Flag columns must be logical.
+
+The `strategy` argument defines how multiple flags combine. `any` excludes a respondent when at least one flag is `TRUE`; `all` excludes only when every flag is `TRUE`; and `at_least` excludes when the number of `TRUE` flags reaches `n`. If missing flag values make the decision indeterminate, `na_action` controls whether the function errors (default), keeps the respondent, or excludes the respondent. For example, under `strategy = "any"`, `c(FALSE, NA)` is indeterminate, while `c(TRUE, NA)` is already a positive exclusion decision.
+
+```r
+filtered <- filter_respondents(
+  answers,
+  flags,
+  strategy = "any",
+  na_action = "keep"
+)
+
+# Retained respondents
+filtered$data
+
+# Excluded respondents
+filtered$excluded
+
+# Complete audit trail
+filtered$audit
+```
+
+The result is a named list: `data` contains retained rows, `excluded` contains removed rows, and `audit` records every respondent's ID, original row index, flags, aggregate decision, settings, and final exclusion status. The audit table uses fixed metadata column names; ID and flag columns cannot use those reserved names. Filtering is an explicit data-management step, so report the rules and consider comparing results with and without excluded respondents.
+
+## 14. Example with a real questionnaire: a 35-item BFI
 
 Suppose a data frame named `bfi_data` contains 35 items named `BFI1` through `BFI35`. **These are example variable names; the package does not include BFI data.**
 
@@ -267,13 +357,13 @@ head(result[c("straight_line", "longstr", "avgstr", "irv")])
 
 **Important:** Keep in mind that the BFI measures multiple personality factors, includes reverse-keyed items, and may be presented in different orders across studies. A longstring across all 35 items and factor-specific indicators address different questions.
 
-## 13. Reporting results and other considerations
+## 15. Reporting results and other considerations
 
-### 13.1 Use multiple indicators
+### 15.1 Use multiple indicators
 
-Completely identical responses, long runs of identical responses, low IRV, high IRV, low consistency, and multivariate outliers each capture different aspects of response patterns. Rather than automatically excluding respondents based on one score or a universal cutoff, inspect the indicator distributions and item content.
+Completely identical responses, long runs of identical responses, low IRV, high IRV, low consistency, semantic inconsistency, and multivariate outliers each capture different aspects of response patterns. Rather than automatically excluding respondents based on one score or a universal cutoff, inspect the indicator distributions and item content.
 
-### 13.2 Decisions to make before analysis
+### 15.2 Decisions to make before analysis
 
 - Which items or subscales will be included in each indicator?
 - Will the analysis use the item presentation order, and will items be analyzed before or after scoring and reverse-scoring?
@@ -281,13 +371,13 @@ Completely identical responses, long runs of identical responses, low IRV, high 
 - Which indicators will be used, and for what purpose?
 - Will potentially problematic respondents be excluded, or will results be compared in a sensitivity analysis?
 
-### 13.3 Example wording for a paper
+### 15.3 Example wording for a paper
 
-> For an exploratory assessment of response quality, we used the R package Satisficing (version 0.2.0) to calculate completely identical responses across selected items (`stline`), the maximum run length of identical responses (`longstring`), and within-respondent standard deviation (`irv`). These were treated as response-pattern indicators, not definitive diagnoses of careless responding.
+> For an exploratory assessment of response quality, we used the R package Satisficing (version 0.4.0) to calculate completely identical responses across selected items (`stline`), the maximum run length of identical responses (`longstring`), within-respondent standard deviation (`irv`), and semantic inconsistency across directional item pairs (`semantic_inconsistency`). These were treated as response-pattern indicators, not definitive diagnoses of careless responding.
 
 In an actual paper, report the functions used, the analyzed items, missing-data handling, the rationale for any thresholds, the number of exclusions, and sensitivity analyses.
 
-## 14. References, sources, and licenses
+## 16. References, sources, and licenses
 
 - Johnson, J. A. (2005). Ascertaining the validity of individual protocols from web-based personality inventories. *Journal of Research in Personality, 39*, 103–129. https://doi.org/10.1016/j.jrp.2004.09.009
 - Meade, A. W., & Craig, S. B. (2012). Identifying careless responses in survey data. *Psychological Methods, 17*, 437–455. https://doi.org/10.1037/a0028085
@@ -299,4 +389,4 @@ The `evenodd()`, `irv()`, `longstring()`, `mahad()`, `psychsyn()`, `psychant()`,
 
 ---
 
-*This guide was prepared based on the official reference manual included with Satisficing v0.2.0 (2026-10-17 edition). For definitive behavior, consult `?function_name` and the source code for the package version you are using.*
+*This guide was prepared based on the official reference manual included with Satisficing v0.4.0. For definitive behavior, consult `?function_name` and the source code for the package version you are using.*

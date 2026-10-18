@@ -36,6 +36,13 @@ Tools for Detecting Indicators of Survey Satisficing.
   - `mrp()`, `mir()`, `spv()`: Retained for backward compatibility; append the calculated indicator as a column to the input data frame.
 - Together with `stline()` (original integer indicator for identical observed responses) and `irv()` (row-wise standard deviation), `Satisficing` covers all five straightlining measures discussed in Kim et al. (2019).
 
+### Semantic Inconsistency
+- `semantic_inconsistency()`: Computes response inconsistency across user-specified item pairs with expected directional relationships (`same` or `opposite`), normalized to the theoretical response scale range [0, 1].
+
+### Respondent Screening and Filtering
+- `flag_respondents()`: Evaluates user-specified logical rules across survey quality indicators with data-masking and automatic/explicit ID retention.
+- `filter_respondents()`: Filters survey response data based on quality flags using explicit ID matching, three-valued logic aggregation (`any`, `all`, `at_least`), and structured audit logging.
+
 ## Installation
 
 Install the package using `remotes`:
@@ -50,13 +57,27 @@ remotes::install_github("soheidon/Satisficing")
 ```r
 library(Satisficing)
 
-# Straight-line detection (original tool)
+# Example survey responses
 responses <- data.frame(
   q1 = c(1, 1, 1, 2, NA),
   q2 = c(1, 1, 2, 2, NA),
   q3 = c(1, 2, 3, 2, 1)
 )
+
+# Straight-line detection (original tool)
 stline(responses, c("q1", "q2", "q3"))
+
+# Semantic inconsistency across item pairs
+item_pairs <- data.frame(
+  item1 = c("q1", "q1"),
+  item2 = c("q2", "q3"),
+  relation = c("same", "opposite"),
+  stringsAsFactors = FALSE
+)
+semantic_scores <- semantic_inconsistency(
+  responses, item_pairs,
+  scale_min = 1, scale_max = 5
+)
 
 # Canonical straightliner functions (Kim et al., 2019)
 straightlining(responses, varnames = c("q1", "q2", "q3"))

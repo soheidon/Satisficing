@@ -1,3 +1,18 @@
+# Satisficing 0.4.0
+
+Version 0.4.0 introduces tools for evaluating semantic response inconsistency across user-specified item pairs (`semantic_inconsistency`), generating quality flags from user-defined logical rules (`flag_respondents`), and filtering survey respondents based on multi-indicator criteria with explicit ID matching and comprehensive audit logs (`filter_respondents`), while maintaining full backward compatibility with all existing functions (`stline`, `matching`, `rawnn`, `careless`-derived indices, and `straightliner`-aligned straightlining measures).
+
+### New Features
+
+- `semantic_inconsistency()`: Computes semantic response inconsistency across user-specified item pairs with expected relationships (`"same"` or `"opposite"`), normalized to the theoretical response scale range [0, 1].
+  - Evaluates respondent-level summary metrics (`mean_inconsistency`, `max_inconsistency`, `sum_inconsistency`, `n_valid_pairs`, `n_missing_pairs`, `n_high_inconsistency`, `prop_high_inconsistency`).
+  - Evaluates detailed pair-level evaluations via `details = TRUE`.
+  - Methodological notice: Semantic inconsistency measures pattern divergence from user-defined directional relationships; it does not definitively determine careless or insufficient-effort responding.
+- `flag_respondents()`: Evaluates one or more user-defined logical conditions within survey indicators, using data-masking with caller-environment fallback, strict logical type checks (no length-1 recycling, no implicit type coercion), column name preservation without automatic syntactic mangling, and automatic/explicit respondent ID column retention.
+- `filter_respondents()`: Filters survey response data based on quality flags using explicit ID matching (prohibiting unaligned row-order joins), three-valued logic aggregation (`strategy = "any"`, `"all"`, or `"at_least"`), configurable resolution for indeterminate decisions (`na_action = "error"`, `"keep"`, or `"exclude"`), and structured audit logging containing respondent-level tracking metrics.
+
+---
+
 # Satisficing 0.3.0
 
 Version 0.3.0 implements straightlining measures described by Kim et al. (2019) aligned with the canonical API conventions of `mweylandt/straightliner` (commit `2873384c8bc54aec48abb54e9543c408723fbe0a`), while maintaining full backward compatibility with all existing functions (`stline`, `irv`, `matching`, `rawnn`, and careless-derived indices).
